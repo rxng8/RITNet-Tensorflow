@@ -13,8 +13,8 @@ Setup for tools
 from setuptools import find_packages, setup
 
 setup(
-    name='example',
-    packages=find_packages(),
+    name='ritnet',
+    packages=["ritnet"],
     version='0.1.0',
     description='',
     author='Viet Dung Nguyen',

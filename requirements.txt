@@ -10,3 +10,8 @@ pytz==2022.1
 six==1.16.0
 wincertstore==0.2
 bunch==1.0.1
+tensorflow==2.8.0
+matplotlib==3.5.1
+pillow==9.1.0
+opencv-python==4.5.5.64
+tqdm==4.64.0
