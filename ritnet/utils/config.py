@@ -24,6 +24,6 @@ def get_config_from_json(json_file):
     config_dict = json.load(config_file)
 
   # convert the dictionary to a namespace using bunch lib
-  config = Munch(config_dict)
+  config = Munch.fromDict(config_dict)
 
-  return config, config_dict
+  return config
