@@ -1,0 +1,9 @@
+{
+  "image_size": {
+    "width": 640,
+    "height": 480
+  },
+  "channel": 3,
+  "n_class": 4,
+  "batch_size": 32
+}

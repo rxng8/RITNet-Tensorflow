@@ -22,13 +22,13 @@ def show_img(img):
   plt.imshow(img)
   plt.show()
 
-def preprocess_image(img: np.array, image_size=(320, 320)) -> tf.Tensor:
+def preprocess_image(img: np.array, image_size=None) -> tf.Tensor:
   """_summary_
 
   Args:
     img (np.array): Expect image with shape (height, width, 3). With range [0, 255], int
     image_size (tuple, optional): Size of the image (does not include the number of channel).
-      Defaults to (320, 320).
+      Defaults to None.
 
   Returns:
     tf.Tensor: Tensor representation of the preprocessed image.
@@ -38,5 +38,6 @@ def preprocess_image(img: np.array, image_size=(320, 320)) -> tf.Tensor:
   preprocessed_img = tf.cast(img, tf.float32)
   preprocessed_img /= 255.0
   assert tf.reduce_max(preprocessed_img) <= 1 and tf.reduce_min(preprocessed_img) >= 0, "Wrong behavior"
-  preprocessed_img = tf.image.resize(preprocessed_img, image_size, method=tf.image.ResizeMethod.BILINEAR)
+  if image_size != None:
+    preprocessed_img = tf.image.resize(preprocessed_img, image_size, method=tf.image.ResizeMethod.BILINEAR)
   return preprocessed_img
