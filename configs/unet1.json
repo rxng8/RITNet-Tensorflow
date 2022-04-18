@@ -40,7 +40,7 @@
     },
     {
       "name": "upsampling",
-      "layer": {"layer_idx": 20}
+      "layer": {"size": 2, "layer_idx": 20}
     },
     {
       "name": "concatenate",

@@ -33,6 +33,7 @@ import tqdm
 
 from ritnet.utils.utils import show_img, preprocess_image
 from ritnet.utils.config import get_config_from_json
+from ritnet.model.model_builder import build_unet_model
 
 
 MODEL_ARCHITECTURE_FOLDER = "../src/model/"
@@ -156,7 +157,6 @@ test_batch_dataset = test_dataset.batch(config.batch_size)
 
 # %%
 
+model_config = get_config_from_json("../configs/unet1.json")
 
-
-
-
+build_unet_model(config, model_config)
