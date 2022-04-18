@@ -157,6 +157,11 @@ test_batch_dataset = test_dataset.batch(config.batch_size)
 
 # %%
 
-model_config = get_config_from_json("../configs/unet1.json")
+from ritnet.model.model_builder import build_unet_model
+from ritnet.utils.config import get_config_from_json
 
-build_unet_model(config, model_config)
+config = get_config_from_json("../configs/general_config.json")
+# model_config = get_config_from_json("../configs/unet1.json")
+model_config = get_config_from_json("../configs/simplenet.json")
+
+model = build_unet_model(config, model_config, verbose=True)

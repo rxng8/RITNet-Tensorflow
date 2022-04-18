@@ -1,6 +1,6 @@
 {
   "date": "April 17, 2022",
-  "model_name": "Unet1",
+  "model_name": "simpleUnet1",
   "batch_size": 32,
   "model": [
     {
@@ -43,10 +43,6 @@
       "layer": {"size": 2, "layer_idx": 20}
     },
     {
-      "name": "concatenate",
-      "layer": {"layer_idx": 21, "concatenate": [19, 11]}
-    },
-    {
       "name": "conv_blocks",
       "layers": [
         {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 22},
@@ -57,11 +53,7 @@
     },
     {
       "name": "upsampling",
-      "layer": {"size": 2, "layer_idx": 26}
-    },
-    {
-      "name": "concatenate",
-      "layer": {"layer_idx": 27, "concatenate": [25, 3]}
+      "layer": {"layer_idx": 26, "size": 2}
     },
     {
       "name": "conv_blocks",

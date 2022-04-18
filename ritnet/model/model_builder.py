@@ -46,9 +46,12 @@ def perform_conv_blocks(inp: tf.Tensor, convs: List[Dict[str, int]], skip: bool=
       name='conv_' + str(conv['layer_idx']), 
       use_bias=False if conv['bnorm'] else True
     )(x)
-    if conv['bnorm']: x = layers.BatchNormalization(epsilon=0.001, name='bnorm_' + str(conv['layer_idx']))(x)
-    if 'dropout' in conv: x = layers.Dropout(conv['dropout'], name=f"dropout_{conv['layer_idx']}")(x)
-    if conv['leaky']: x = layers.LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
+    if conv['bnorm']:
+      x = layers.BatchNormalization(epsilon=0.001, name='bnorm_' + str(conv['layer_idx']))(x)
+    if 'dropout' in conv:
+      x = layers.Dropout(conv['dropout'], name=f"dropout_{conv['layer_idx']}")(x)
+    if conv['leaky']: 
+      x = layers.LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
 
   return layers.add([skip_connection, x]) if skip else x
 
@@ -75,23 +78,33 @@ def perform_conv_transpose_block(inp: tf.Tensor, conv: Munch) -> tf.Tensor:
   """
   x = inp
   x = layers.Conv2DTranspose(conv.filter, conv.kernel, strides=conv.stride, padding='same', use_bias=False, name=f"trans_conv_{conv.layer_idx}")(x)
-  if conv.bnorm: x = layers.BatchNormalization(epsilon=0.001, name='bnorm_' + str(conv.layer_idx))(x)
-  if "dropout" in conv: x = layers.Dropout(conv.dropout, name=f"dropout_{conv.layer_idx}")(x)
-  if conv.leaky: x = layers.LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
+  if conv.bnorm:
+    x = layers.BatchNormalization(epsilon=0.001, name='bnorm_' + str(conv.layer_idx))(x)
+  if "dropout" in conv:
+    x = layers.Dropout(conv.dropout, name=f"dropout_{conv.layer_idx}")(x)
+  if conv.leaky:
+    x = layers.LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
   return x
 
-def perform_concatenate(inp1: tf.Tensor, inp2: tf.Tensor, concat: Munch):
-  """_summary_
+def perform_concatenate(output_dict: Dict[int, tf.Tensor], concat: Munch):
+  """Concatenate the list of output toghether
 
   Args:
-    inp1 (tf.Tensor): _description_
-    inp2 (tf.Tensor): _description_
+    output_dict (Dict[int, tf.Tensor]): _description_
     concat (Munch): _description_
 
   Returns:
     _type_: _description_
   """
-  return layers.Concatenate(name=f"concat_{concat.layer_idx}")([inp1, inp2])
+
+  # build the list of output needed to be concatenated.
+  list_layer_idx = concat.concatenate
+  concat_list = []
+  for layer_idx in list_layer_idx:
+    concat_list.append(output_dict[layer_idx])
+
+  # Perform concatenation
+  return layers.Concatenate(name=f"concat_{concat.layer_idx}")(concat_list)
 
 def perform_max_pool(inp: tf.Tensor, max_pool: Munch):
   """_summary_
@@ -102,7 +115,7 @@ def perform_max_pool(inp: tf.Tensor, max_pool: Munch):
   """
   return layers.MaxPool2D(pool_size=max_pool.pool_size, strides=max_pool.stride, name=f"max_pool_{max_pool.layer_idx}")(inp)
 
-def build_unet_model(general_config: Munch, model_config: Munch) -> tf.keras.models.Model:
+def build_unet_model(general_config: Munch, model_config: Munch, verbose=False) -> tf.keras.models.Model:
   """Build an unet model based on configuurations
 
   Args:
@@ -112,15 +125,39 @@ def build_unet_model(general_config: Munch, model_config: Munch) -> tf.keras.mod
   Returns:
     tf.keras.models.Model: _description_
   """
+
   input_tensor = layers.Input(shape=(
-    general_config.image_size.height, 
-    general_config.image_size.width, 
+    general_config.image_size.height,
+    general_config.image_size.width,
     general_config.channel
   ))
 
+  tensor = input_tensor
+  output_dict = {}
+
   for layer_dict in model_config.model:
-    print(layer_dict.name)
-    pass  
+    # print(layer_dict.name)
+    if layer_dict.name == "conv_blocks":
+      tensor = perform_conv_blocks(tensor, layer_dict.layers, skip=False)
+      output_dict[layer_dict.layers[-1].layer_idx] = tensor
+    elif layer_dict.name == "max_pool":
+      tensor = perform_max_pool(tensor, layer_dict.layer)
+      output_dict[layer_dict.layer.layer_idx] = tensor
+    elif layer_dict.name == "upsampling":
+      tensor = perform_upsampling(tensor, layer_dict.layer)
+      output_dict[layer_dict.layer.layer_idx] = tensor
+    elif layer_dict.name == "concatenate":
+      tensor = perform_concatenate(output_dict, layer_dict.layer)
+    else:
+      raise NotImplementedError
+  
+  model: tf.keras.models.Model = tf.keras.models.Model(
+    input_tensor, tensor, name=f"{model_config.model_name}")
+  if verbose:
+    # print(model.summary())
+    model.summary()
+  return model
+
 
   
   
