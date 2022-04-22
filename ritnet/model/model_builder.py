@@ -67,7 +67,8 @@ def perform_upsampling(inp: tf.Tensor, ups: Munch):
 def perform_conv_transpose_block(inp: tf.Tensor, conv: Munch) -> tf.Tensor:
   """_summary_
 
-  More resource: https://github.com/tensorflow/examples/blob/master/tensorflow_examples/models/pix2pix/pix2pix.py
+  More resource:
+    pix2pix: https://github.com/tensorflow/examples/blob/master/tensorflow_examples/models/pix2pix/pix2pix.py
 
   Args:
     inp (tf.Tensor): _description_

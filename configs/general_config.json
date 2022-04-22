@@ -5,5 +5,6 @@
   },
   "channel": 3,
   "n_class": 4,
-  "batch_size": 32
+  "batch_size": 32,
+  "learning_rate": 1e-4
 }
