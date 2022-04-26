@@ -32,7 +32,7 @@ import matplotlib.pyplot as plt
 import cv2
 import tqdm
 
-from ritnet.utils.utils import show_img, preprocess_image
+from ritnet.utils.utils import show_img, preprocess_image, preprocess_label, show_imgs
 from ritnet.utils.config import get_config_from_json
 from ritnet.model.model_builder import build_unet_model
 
@@ -78,7 +78,7 @@ def train_generator():
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
     prep_image = preprocess_image(image, image_size=(config.image_size.height, config.image_size.width))
-    prep_label = preprocess_image(label, image_size=(config.image_size.height, config.image_size.width))
+    prep_label = preprocess_label(label, image_size=(config.image_size.height, config.image_size.width))
 
     # Updating pointer to the next file 
     file_pointer += 1
@@ -116,7 +116,7 @@ def test_generator():
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
     prep_image = preprocess_image(image, image_size=(config.image_size.height, config.image_size.width))
-    prep_label = preprocess_image(label, image_size=(config.image_size.height, config.image_size.width))
+    prep_label = preprocess_label(label, image_size=(config.image_size.height, config.image_size.width))
 
     # Updating pointer to the next file 
     file_pointer += 1
@@ -137,7 +137,7 @@ train_dataset = tf.data.Dataset.from_generator(
   train_generator,
   output_signature=(
     tf.TensorSpec(shape=(config.image_size.height, config.image_size.width, config.channel), dtype=tf.float32),
-    tf.TensorSpec(shape=(config.image_size.height, config.image_size.width, config.channel), dtype=tf.float32)
+    tf.TensorSpec(shape=(config.image_size.height, config.image_size.width, config.n_class), dtype=tf.float32)
   ),
 )
 train_batch_dataset = train_dataset.batch(config.batch_size)
@@ -148,7 +148,7 @@ test_dataset = tf.data.Dataset.from_generator(
   test_generator,
   output_signature=(
     tf.TensorSpec(shape=(config.image_size.height, config.image_size.width, config.channel), dtype=tf.float32),
-    tf.TensorSpec(shape=(config.image_size.height, config.image_size.width, config.channel), dtype=tf.float32)
+    tf.TensorSpec(shape=(config.image_size.height, config.image_size.width, config.n_class), dtype=tf.float32)
   ),
 )
 test_batch_dataset = test_dataset.batch(config.batch_size)
@@ -165,6 +165,12 @@ test_batch_iter = iter(test_batch_dataset)
 
 # multiply = preprocess_image(example_image) * preprocess_image(example_label)
 # show_img(multiply)
+
+# debugging_iter = iter(test_batch_dataset)
+# a,b = next(debugging_iter)
+
+# show_img(b[0, ..., 2])
+
 
 # %%
 
@@ -279,11 +285,7 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=config.learning_rate)
 history_path = f"../history/history_{model_config.model_name}.npy"
 weights_path = f"../models/{model_config.model_name}/checkpoint"
 
-# %%
-
-model.load_weights(weights_path)
-
-
+# model.load_weights(weights_path)
 
 # %%
 
@@ -294,8 +296,8 @@ history = train(
   optimizer,
   tf.keras.losses.CategoricalCrossentropy(from_logits=True),
   epochs=10,
-  steps_per_epoch=100, # 34000 // 4
-  valid_step=5,
+  steps_per_epoch=1000, # 34000 // 4
+  valid_step=100,
   history_path=history_path,
   weights_path=weights_path,
   save_history=True
@@ -308,39 +310,33 @@ history = train(
 debugging_iter = iter(test_batch_dataset)
 
 # %%
+
 import random
 batch = next(debugging_iter)
 batch_x = batch[0]
 batch_label = batch[1]
 example_id = random.randint(0, config.batch_size - 1)
 
-# %%
-
-show_img(batch_x[example_id])
-show_img(batch_label[example_id])
-
-
-# %%
 with tf.device("/GPU:0"):
   y_pred = model(batch_x, training=False)
 
-# %%
+print("input")
+show_img(batch_x[example_id])
 
 example_out = tf.nn.sigmoid(y_pred)[example_id]
-
-show_img(example_out)
-
 mask = tf.math.argmax(example_out, axis=-1)
 
-show_img(mask)
+example_bg = mask == 0
+example_pupil = mask == 1
+example_iris = mask == 2
+example_sclera = mask == 3
 
-example_iris = mask == 1
+show_imgs([[mask, example_pupil], [example_iris, example_sclera]])
 
-show_img(example_iris)
 
 # %%
 
-
+history = np.load(history_path, allow_pickle=True)
 [epochs_loss, epochs_val_loss] = history
 
 

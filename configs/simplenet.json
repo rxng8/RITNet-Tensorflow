@@ -137,7 +137,7 @@
       "name": "conv_blocks",
       "layers": [
         {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 30},
-        {"filter": 3, "kernel": 3, "stride": 1, "bnorm": false, "leaky": false, "layer_idx": 31}
+        {"filter": 4, "kernel": 3, "stride": 1, "bnorm": false, "leaky": false, "layer_idx": 31}
       ]
     }
   ]
