@@ -8,5 +8,8 @@ data/**
 models/**
 !models/.gitkeep
 
+history/**
+!history/.gitkeep
+
 **.egg-info
 **__pycache__

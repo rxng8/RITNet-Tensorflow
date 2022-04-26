@@ -46,13 +46,12 @@ def perform_conv_blocks(inp: tf.Tensor, convs: List[Dict[str, int]], skip: bool=
       name='conv_' + str(conv['layer_idx']), 
       use_bias=False if conv['bnorm'] else True
     )(x)
+    if conv['leaky']: 
+      x = layers.LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
     if conv['bnorm']:
       x = layers.BatchNormalization(epsilon=0.001, name='bnorm_' + str(conv['layer_idx']))(x)
     if 'dropout' in conv:
       x = layers.Dropout(conv['dropout'], name=f"dropout_{conv['layer_idx']}")(x)
-    if conv['leaky']: 
-      x = layers.LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
-
   return layers.add([skip_connection, x]) if skip else x
 
 def perform_upsampling(inp: tf.Tensor, ups: Munch):

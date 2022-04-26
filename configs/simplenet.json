@@ -1,14 +1,12 @@
 {
   "date": "April 17, 2022",
-  "model_name": "simpleUnet1",
+  "model_name": "SimpleUNet2",
   "model": [
     {
       "name": "conv_blocks",
       "layers": [
         {"filter": 64, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 0},
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 1},
-        {"filter": 64, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 2},
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 3}
+        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 1}
       ]
     },
     {
@@ -19,9 +17,7 @@
       "name": "conv_blocks",
       "layers": [
         {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 8},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 9},
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 10},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 11}
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 9}
       ]
     },
     {
@@ -31,10 +27,87 @@
     {
       "name": "conv_blocks",
       "layers": [
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 16},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 17},
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 18},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 19}
+        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 80},
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 90}
+      ]
+    },
+    {
+      "name": "max_pool",
+      "layer": {"pool_size": 2, "stride": 2, "layer_idx": 150}
+    },
+
+    {
+      "name": "conv_blocks",
+      "layers": [
+        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 800},
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 900}
+      ]
+    },
+    {
+      "name": "max_pool",
+      "layer": {"pool_size": 2, "stride": 2, "layer_idx": 1500}
+    },
+    {
+      "name": "conv_blocks",
+      "layers": [
+        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 801},
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 901}
+      ]
+    },
+    {
+      "name": "max_pool",
+      "layer": {"pool_size": 2, "stride": 2, "layer_idx": 1501}
+    },
+    {
+      "name": "conv_blocks",
+      "layers": [
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 16},
+        {"filter": 512, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 17}
+      ]
+    },
+    {
+      "name": "upsampling",
+      "layer": {"size": 2, "layer_idx": 2001}
+    },
+    {
+      "name": "concatenate",
+      "layer": {"layer_idx": 2101, "concatenate": [2001, 901]}
+    },
+    {
+      "name": "conv_blocks",
+      "layers": [
+        {"filter": 512, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 2201},
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 2301}
+      ]
+    },
+    {
+      "name": "upsampling",
+      "layer": {"size": 2, "layer_idx": 2000}
+    },
+    {
+      "name": "concatenate",
+      "layer": {"layer_idx": 2100, "concatenate": [2000, 900]}
+    },
+    {
+      "name": "conv_blocks",
+      "layers": [
+        {"filter": 512, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 2200},
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 2300}
+      ]
+    },
+    {
+      "name": "upsampling",
+      "layer": {"size": 2, "layer_idx": 200}
+    },
+    {
+      "name": "concatenate",
+      "layer": {"layer_idx": 210, "concatenate": [200, 90]}
+    },
+    {
+      "name": "conv_blocks",
+      "layers": [
+        {"filter": 512, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 220},
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 230}
       ]
     },
     {
@@ -43,15 +116,13 @@
     },
     {
       "name": "concatenate",
-      "layer": {"layer_idx": 21, "concatenate": [20, 11]}
+      "layer": {"layer_idx": 21, "concatenate": [20, 9]}
     },
     {
       "name": "conv_blocks",
       "layers": [
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 22},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 23},
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 24},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 25}
+        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 22},
+        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 23}
       ]
     },
     {
@@ -60,15 +131,13 @@
     },
     {
       "name": "concatenate",
-      "layer": {"layer_idx": 27, "concatenate": [26, 3]}
+      "layer": {"layer_idx": 27, "concatenate": [26, 1]}
     },
     {
       "name": "conv_blocks",
       "layers": [
-        {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 28},
-        {"filter": 256, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 29},
         {"filter": 128, "kernel": 3, "stride": 1, "bnorm": true, "leaky": true, "layer_idx": 30},
-        {"filter": 3, "kernel": 3, "stride": 1, "bnorm": true, "leaky": false, "layer_idx": 31}
+        {"filter": 3, "kernel": 3, "stride": 1, "bnorm": false, "leaky": false, "layer_idx": 31}
       ]
     }
   ]

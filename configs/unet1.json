@@ -1,7 +1,7 @@
 {
   "date": "April 17, 2022",
   "model_name": "Unet1",
-  "batch_size": 32,
+  "batch_size": 4,
   "model": [
     {
       "name": "conv_blocks",

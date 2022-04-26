@@ -1,10 +1,10 @@
 {
   "image_size": {
-    "width": 640,
-    "height": 480
+    "width": 256,
+    "height": 192
   },
   "channel": 3,
   "n_class": 4,
-  "batch_size": 32,
+  "batch_size": 4,
   "learning_rate": 1e-4
 }

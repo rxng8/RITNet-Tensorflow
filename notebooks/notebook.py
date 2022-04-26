@@ -12,6 +12,7 @@ Example notebook file
 # %%
 
 import os
+from random import random
 import sys
 import collections
 from typing import List, Dict, Tuple
@@ -38,6 +39,17 @@ from ritnet.model.model_builder import build_unet_model
 MODEL_ARCHITECTURE_FOLDER = "../src/model/"
 config = get_config_from_json("../configs/general_config.json")
 
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+  try:
+    # Currently, memory growth needs to be the same across GPUs
+    for gpu in gpus:
+      tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Memory growth must be set before GPUs have been initialized
+    print(e)
 
 # %%
 
@@ -65,8 +77,8 @@ def train_generator():
     image = np.asarray(Image.open(os.path.join(image_path, files_image[file_pointer])))
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
-    prep_image = preprocess_image(image)
-    prep_label = preprocess_image(label)
+    prep_image = preprocess_image(image, image_size=(config.image_size.height, config.image_size.width))
+    prep_label = preprocess_image(label, image_size=(config.image_size.height, config.image_size.width))
 
     # Updating pointer to the next file 
     file_pointer += 1
@@ -103,8 +115,8 @@ def test_generator():
     image = np.asarray(Image.open(os.path.join(image_path, files_image[file_pointer])))
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
-    prep_image = preprocess_image(image)
-    prep_label = preprocess_image(label)
+    prep_image = preprocess_image(image, image_size=(config.image_size.height, config.image_size.width))
+    prep_label = preprocess_image(label, image_size=(config.image_size.height, config.image_size.width))
 
     # Updating pointer to the next file 
     file_pointer += 1
@@ -172,7 +184,7 @@ model = build_unet_model(config, model_config, verbose=True)
 
 
 def train_step(batch_x, batch_label, model, loss_function, optimizer):
-  with tf.device("/CPU:0"):
+  with tf.device("/GPU:0"):
     with tf.GradientTape() as tape:
       logits = model(batch_x, training=True)
       loss = loss_function(batch_label, logits)
@@ -216,10 +228,13 @@ def train(model,
     with tf.device("/CPU:0"):
       step_pointer = 0
       while step_pointer < steps_per_epoch:
-        batch = next(training_batch_iter)
+        try:
+          batch = next(training_batch_iter)
+        except:
+          continue
         batch_x = batch[0]
         batch_label = batch[1]
-        loss = train_step(batch_x, batch_label, model, loss_function, optimizer, step=step_pointer + 1)
+        loss = train_step(batch_x, batch_label, model, loss_function, optimizer)
         print(f"Epoch {epoch + 1} - Step {step_pointer + 1} - Loss: {loss}")
         losses.append(loss)
 
@@ -229,10 +244,13 @@ def train(model,
               % (step_pointer + 1, float(loss))
           )
           # perform validation
-          val_batch = next(test_batch_iter)
+          try:
+            val_batch = next(test_batch_iter)
+          except:
+            continue
           logits = model(val_batch[0], training=False)
           val_loss = loss_function(val_batch[1], logits)
-          print(f"exmaple logits: {logits}")
+          # print(f"exmaple logits: {logits}")
           print(f"Validation loss: {val_loss}\n-----------------")
         if (step_pointer + 1) == steps_per_epoch:
           val_batch = next(test_batch_iter)
@@ -257,8 +275,17 @@ def train(model,
 
 # %%
 
-optimizer = tf.keras.optimizers.SGD(learning_rate=config.learning_rate)
+optimizer = tf.keras.optimizers.Adam(learning_rate=config.learning_rate)
+history_path = f"../history/history_{model_config.model_name}.npy"
+weights_path = f"../models/{model_config.model_name}/checkpoint"
 
+# %%
+
+model.load_weights(weights_path)
+
+
+
+# %%
 
 history = train(
   model,
@@ -266,10 +293,79 @@ history = train(
   test_batch_iter,
   optimizer,
   tf.keras.losses.CategoricalCrossentropy(from_logits=True),
-  epochs=1,
-  steps_per_epoch=100, # 1800 // 16
-  valid_step=20,
-  history_path=None,
-  weights_path=None,
-  save_history=False
+  epochs=10,
+  steps_per_epoch=100, # 34000 // 4
+  valid_step=5,
+  history_path=history_path,
+  weights_path=weights_path,
+  save_history=True
 )
+
+# %%
+
+# Testing
+
+debugging_iter = iter(test_batch_dataset)
+
+# %%
+import random
+batch = next(debugging_iter)
+batch_x = batch[0]
+batch_label = batch[1]
+example_id = random.randint(0, config.batch_size - 1)
+
+# %%
+
+show_img(batch_x[example_id])
+show_img(batch_label[example_id])
+
+
+# %%
+with tf.device("/GPU:0"):
+  y_pred = model(batch_x, training=False)
+
+# %%
+
+example_out = tf.nn.sigmoid(y_pred)[example_id]
+
+show_img(example_out)
+
+mask = tf.math.argmax(example_out, axis=-1)
+
+show_img(mask)
+
+example_iris = mask == 1
+
+show_img(example_iris)
+
+# %%
+
+
+[epochs_loss, epochs_val_loss] = history
+
+
+e_loss = [k[0] for k in epochs_loss]
+
+e_all_loss = []
+
+id = 0
+time_val = []
+for epoch in epochs_loss:
+  for step in epoch:
+    e_all_loss.append(step.numpy())
+    id += 1
+  time_val.append(id)
+
+plt.plot(np.arange(0, len(e_all_loss), 1), e_all_loss, label = "train loss")
+plt.plot(time_val, epochs_val_loss, label = "val loss")
+
+plt.xlabel("Step")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+
+
+
+
+
