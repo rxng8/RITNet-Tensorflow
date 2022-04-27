@@ -174,9 +174,6 @@ test_batch_iter = iter(test_batch_dataset)
 
 # %%
 
-from ritnet.model.model_builder import build_unet_model
-from ritnet.utils.config import get_config_from_json
-
 config = get_config_from_json("../configs/general_config.json")
 # model_config = get_config_from_json("../configs/unet1.json")
 model_config = get_config_from_json("../configs/simplenet.json")

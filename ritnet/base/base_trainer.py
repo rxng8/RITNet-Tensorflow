@@ -9,13 +9,13 @@
 Abstract class for trainer algorithms
 """
 
-from bunch import Bunch
+from munch import Munch
 
 from .base_model import BaseModel
 
 
 class BaseTrainer:
-    def __init__(self, model: BaseModel, data, config: Bunch, logger) -> None:
+    def __init__(self, model: BaseModel, data, config: Munch, logger) -> None:
         self.model: BaseModel = model
         self.logger = logger
         self.config = config

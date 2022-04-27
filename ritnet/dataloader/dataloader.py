@@ -20,14 +20,20 @@ import tensorflow.python.keras.layers as layers
 import numpy as np
 from PIL import Image
 
+
 from ..utils.utils import show_img, preprocess_image, preprocess_label, show_imgs
 from ..utils.config import get_config_from_json
 from ..model.model_builder import build_unet_model
+from ..utils.config import GLOBAL_CONFIG
 
 # https://www.tensorflow.org/guide/data_performance
-def train_generator(height, width):
-  global_vars = get_config_from_json("")
-  dataset_root = "../data/s-general/s-general"
+def train_generator():
+
+  assert GLOBAL_CONFIG.dataset_root != None\
+    and GLOBAL_CONFIG.image_size.height != None\
+    and GLOBAL_CONFIG.image_size.width != None, "Global Config has not been set."
+
+  dataset_root = GLOBAL_CONFIG.dataset_root
   train_folder = [str(i) for i in range(1, 18, 1)]
   
   folders = train_folder # The list of predefined training folders [1...17]
@@ -48,8 +54,8 @@ def train_generator(height, width):
     image = np.asarray(Image.open(os.path.join(image_path, files_image[file_pointer])))
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
-    prep_image = preprocess_image(image, image_size=(height, width))
-    prep_label = preprocess_label(label, image_size=(height, width))
+    prep_image = preprocess_image(image, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
+    prep_label = preprocess_label(label, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
 
     # Updating pointer to the next file 
     file_pointer += 1
@@ -64,8 +70,13 @@ def train_generator(height, width):
     # Yield
     yield prep_image, prep_label
 
-def test_generator(height, width):
-  dataset_root = "../data/s-general/s-general"
+def test_generator():
+
+  assert GLOBAL_CONFIG.dataset_root != None\
+    and GLOBAL_CONFIG.image_size.height != None\
+    and GLOBAL_CONFIG.image_size.width != None, "Global Config has not been set."
+
+  dataset_root = GLOBAL_CONFIG.dataset_root
   test_folder = [str(i) for i in range(18, 25, 1)]
 
   folders = test_folder # The list of predefined training folders [1...17]
@@ -86,8 +97,8 @@ def test_generator(height, width):
     image = np.asarray(Image.open(os.path.join(image_path, files_image[file_pointer])))
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
-    prep_image = preprocess_image(image, image_size=(height, width))
-    prep_label = preprocess_label(label, image_size=(height, width))
+    prep_image = preprocess_image(image, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
+    prep_label = preprocess_label(label, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
 
     # Updating pointer to the next file 
     file_pointer += 1

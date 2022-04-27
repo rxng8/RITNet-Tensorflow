@@ -11,6 +11,7 @@ Config json processor file
 
 import json
 import os
+from turtle import width
 from munch import Munch
 
 def get_config_from_json(json_file):
@@ -28,6 +29,15 @@ def get_config_from_json(json_file):
 
   return config
 
+################### Workaround ####################
 
-class CONFIG:
-  hello = 12
+GLOBAL_CONFIG: Munch = None
+
+def setup_global_config(config: Munch, verbose: bool=False) -> None:
+  global GLOBAL_CONFIG
+  GLOBAL_CONFIG = config
+  if verbose:
+    print(GLOBAL_CONFIG)
+
+################### End of Workaround #############
+

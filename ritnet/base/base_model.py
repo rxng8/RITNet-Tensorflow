@@ -10,12 +10,12 @@ Abstract class for model architectures
 """
 
 import tensorflow as tf
-from bunch import Bunch
+from munch import Munch
 
 
 class BaseModel:
-    def __init__(self, config: Bunch) -> None:
-        self.config: Bunch = config
+    def __init__(self, config: Munch) -> None:
+        self.config: Munch = config
 
     def save(self):
         print("Saving model...")
