@@ -27,3 +27,7 @@ def get_config_from_json(json_file):
   config = Munch.fromDict(config_dict)
 
   return config
+
+
+class CONFIG:
+  hello = 12

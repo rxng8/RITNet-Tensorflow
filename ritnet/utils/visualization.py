@@ -20,7 +20,7 @@ def draw_image_histogram(example_path: str) -> None:
   https://datacarpentry.org/image-processing/05-creating-histograms/
 
   Args:
-      example_path (str): _description_
+    example_path (str): _description_
   """
   # read original image, in full color
   image = skimage.io.imread(example_path)
