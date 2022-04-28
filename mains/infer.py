@@ -57,7 +57,7 @@ def main():
   
   # Argument parsing
   
-  config_path = "../configs/training_config/general_config.json"
+  config_path = "../configs/training_config/training_config_2.json"
   config = get_config_from_json(config_path)
 
   ##### Workaround ############
@@ -86,7 +86,7 @@ def main():
   model = build_unet_model(config, model_config, verbose=False)
 
   # Training
-  weights_path = f"../models/{model_config.model_name}/checkpoint"
+  weights_path = f"../models/{GLOBAL_CONFIG.name}_{model_config.model_name}/checkpoint"
 
   model.load_weights(weights_path)
 

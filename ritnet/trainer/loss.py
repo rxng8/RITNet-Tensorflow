@@ -71,7 +71,7 @@ def get_gdl_loss_func(loss_config: Munch, verbose=True):
     flat_true = tf.reshape(true, (GLOBAL_CONFIG.batch_size, -1, GLOBAL_CONFIG.n_class))
     flat_pred = tf.reshape(sigmoid_pred, (GLOBAL_CONFIG.batch_size, -1, GLOBAL_CONFIG.n_class))
 
-    invariance_per_class = 1 / (tf.pow(tf.reduce_sum(flat_pred, axis=-2), 2) + 1e-8)
+    invariance_per_class = 1 / (tf.pow(tf.reduce_sum(flat_true, axis=-2), 2) + 1e-8)
 
     multiple = tf.reduce_sum(flat_true * flat_pred, axis=-2)
     summa = tf.reduce_sum(flat_true + flat_pred, axis=-2)
