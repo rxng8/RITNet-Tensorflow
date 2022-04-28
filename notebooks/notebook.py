@@ -282,7 +282,7 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=config.learning_rate)
 history_path = f"../history/history_{model_config.model_name}.npy"
 weights_path = f"../models/{model_config.model_name}/checkpoint"
 
-# model.load_weights(weights_path)
+model.load_weights(weights_path)
 
 # %%
 

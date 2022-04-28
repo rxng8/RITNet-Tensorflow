@@ -6,7 +6,7 @@
 @Credits: Viet Dung Nguyen
 @Version: 0.0.1
 
-File contains example trainer
+File contains trainer
 """
 
 import os
@@ -89,8 +89,8 @@ class Trainer(BaseTrainer):
 
           if (step_pointer + 1) % self.valid_step == 0:
             print(
-                "Training loss (for one batch) at step %d: %.4f"
-                % (step_pointer + 1, float(loss))
+              "Training loss (for one batch) at step %d: %.4f"
+              % (step_pointer + 1, float(loss))
             )
             # perform validation
             # try:

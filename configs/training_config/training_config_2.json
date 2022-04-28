@@ -1,0 +1,23 @@
+{
+  "name": "training_config_2",
+  "image_size": {
+    "width": 256,
+    "height": 192
+  },
+  "channel": 3,
+  "n_class": 4,
+  "batch_size": 8,
+  "steps_per_epoch": 4250,
+  "valid_step": 250,
+  "epochs": 10,
+  "dataset_root": "../data/s-general/",
+  "loss": {
+    "name": "gdl",
+    "lambda1": 0.5,
+    "lambda2": 0.5
+  },
+  "optimizer": {
+    "name": "adam",
+    "learning_rate": 1e-4
+  }
+}

@@ -21,16 +21,29 @@
 * Conda environment with Python 3.8
 
 ## Results:
-* This is the result trained from 1 epoch of 8000 objects (~34,000 objects in the training set).
+* This is the result trained from 1 epoch of 8000 objects (~34,000 objects in the training set). These are trained with 1 GPU NVIDIA GTX 1060 Max-Q 6 Gb. 
 <div style="align-item: center;">
   <p>Input:</p>
-  <img src="./docs/figures/example_input.png" width=500/>
+  <img src="./docs/figures/SimpleUNet2/example_input.png" width=500/>
   
   <p>Inference</p>
-  <img src="./docs/figures/example_output.png" width=500/>
+  <img src="./docs/figures/SimpleUNet2/example_output.png" width=500/>
+</div>
+
+* This is the result trained from 10 epoch of 4250 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. 
+<div style="align-item: center;">
+  <p>History:</p>
+  <img src="./docs/figures/SimpleUNet2/simpleUNet2_training_result.png" width=500/>
+
+  <p>Input:</p>
+  <img src="./docs/figures/SimpleUNet2/example_input_2.png" width=500/>
+  
+  <p>Inference</p>
+  <img src="./docs/figures/SimpleUNet2/example_output_2.png" width=500/>
 </div>
 
 
+## Misc
 * Install TensorRT
 ```
 python -m pip install C:\Users\GBURG-4\Documents\TensorRT-7.2.2.3.Windows10.x86_64.cuda-11.1.cudnn8.0\TensorRT-7.2.2.3\graphsurgeon\graphsurgeon-0.4.5-py2.py3-none-any.whl
