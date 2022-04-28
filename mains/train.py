@@ -8,6 +8,7 @@
 
 Example main file
 """
+# %%
 
 import os
 from random import random
@@ -104,9 +105,9 @@ def main():
     test_batch_iter,
     optimizer,
     tf.keras.losses.CategoricalCrossentropy(from_logits=True),
-    epochs=1,
-    steps_per_epoch=5, # 34000 // 4
-    valid_step=5,
+    epochs=10,
+    steps_per_epoch=4250, # 34000 // 8
+    valid_step=250,
     history_path=history_path,
     weights_path=weights_path,
     save_history=True

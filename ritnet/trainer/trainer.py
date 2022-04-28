@@ -75,10 +75,12 @@ class Trainer(BaseTrainer):
       with tf.device("/CPU:0"):
         step_pointer = 0
         while step_pointer < self.steps_per_epoch:
-          try:
-            batch = next(self.training_batch_iter)
-          except:
-            continue
+          # try:
+          #   batch = next(self.training_batch_iter)
+          # except:
+          #   print()
+          #   continue
+          batch = next(self.training_batch_iter)
           batch_x = batch[0]
           batch_label = batch[1]
           loss = self.train_step(batch_x, batch_label, self.model, self.loss_function, self.optimizer)
@@ -91,10 +93,11 @@ class Trainer(BaseTrainer):
                 % (step_pointer + 1, float(loss))
             )
             # perform validation
-            try:
-              val_batch = next(self.test_batch_iter)
-            except:
-              continue
+            # try:
+            #   val_batch = next(self.test_batch_iter)
+            # except:
+            #   continue
+            val_batch = next(self.test_batch_iter)
             logits = self.model(val_batch[0], training=False)
             val_loss = self.loss_function(val_batch[1], logits)
             # print(f"exmaple logits: {logits}")

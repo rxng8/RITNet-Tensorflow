@@ -10,6 +10,7 @@ Example dataloader
 """
 
 import os
+import sys
 from typing import List, Dict, Tuple
 from munch import Munch
 
@@ -54,6 +55,20 @@ def train_generator():
     image = np.asarray(Image.open(os.path.join(image_path, files_image[file_pointer])))
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
+    # Workaround for inconsistent data. Some input data has 3 channels,
+    # while some of them has 4 channels with an empty channels in the end.
+    # In that case we just remove the last channel.
+    try:
+      assert image.shape[-1] == 3
+    except:
+      if image.shape[-1] == 4:
+        image = image[..., :-1]
+      else:
+        print("Unknown number of channel.")
+        sys.exit(1)
+    # Do the same check for labels.
+    assert label.shape[-1] == 3, "Inconsistent label."
+
     prep_image = preprocess_image(image, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
     prep_label = preprocess_label(label, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
 
@@ -97,6 +112,20 @@ def test_generator():
     image = np.asarray(Image.open(os.path.join(image_path, files_image[file_pointer])))
     label = np.asarray(Image.open(os.path.join(label_path, files_image[file_pointer])))
     
+    # Workaround for inconsistent data. Some input data has 3 channels,
+    # while some of them has 4 channels with an empty channels in the end.
+    # In that case we just remove the last channel.
+    try:
+      assert image.shape[-1] == 3
+    except:
+      if image.shape[-1] == 4:
+        image = image[..., :-1]
+      else:
+        print("Unknown number of channel.")
+        sys.exit(1)
+    # Do the same check for labels.
+    assert label.shape[-1] == 3, "Inconsistent label."
+
     prep_image = preprocess_image(image, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
     prep_label = preprocess_label(label, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
 
