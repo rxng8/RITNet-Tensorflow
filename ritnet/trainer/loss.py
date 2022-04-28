@@ -87,7 +87,7 @@ def get_gdl_loss_func(loss_config: Munch, verbose=True):
     #   print(pred)
     #   print(invariance_per_class)
 
-    return ce_loss * (loss_config.lambda1 + loss_config.lambda2 * gdl)
+    return ce_loss + loss_config.theta * gdl
   
   return gdl_loss
 

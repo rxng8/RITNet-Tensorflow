@@ -17,10 +17,7 @@ print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 import argparse
 
-from ritnet.trainer.trainer import Trainer
 from ritnet.utils.config import get_config_from_json, setup_global_config
-from ritnet.model.model_builder import build_unet_model
-from ritnet.trainer.optimizer import get_optimizer_by_config
 
 gpus = tf.config.list_physical_devices('GPU')
 
@@ -40,17 +37,21 @@ def main():
   # Argument parsing
   
   config_path = "../configs/training_config/training_config_2.json"
-  config = get_config_from_json(config_path)
+  model_config_path = "../configs/model_config/simplenet.json"
 
-  ##### Workaround ############
+  config = get_config_from_json(config_path)
+  model_config = get_config_from_json(model_config_path)
+
+  ##### Workaround to setup global config ############
   setup_global_config(config)
   from ritnet.utils.config import GLOBAL_CONFIG
   ##### End of Workaround #####
 
-  model_config_path = "../configs/model_config/simplenet.json"
-  model_config = get_config_from_json(model_config_path)
-
-  # Because the generate is based on the GLOBAL_CONFIG, we have to import them after we set the config
+  # Because the generator and some classes are based on the
+  # GLOBAL_CONFIG, we have to import them after we set the config
+  from ritnet.trainer.trainer import Trainer
+  from ritnet.model.model_builder import build_unet_model
+  from ritnet.trainer.optimizer import get_optimizer_by_config
   from ritnet.dataloader.dataloader import train_generator, test_generator
 
   # Data loader
@@ -84,7 +85,7 @@ def main():
   history_path = f"../history/{GLOBAL_CONFIG.name}_{model_config.model_name}.npy"
   weights_path = f"../models/{GLOBAL_CONFIG.name}_{model_config.model_name}/checkpoint"
 
-  # Test lost func
+  # get the loss function by loss config
   from ritnet.trainer.loss import get_loss_func_by_loss_config
   loss_func = get_loss_func_by_loss_config(GLOBAL_CONFIG.loss)
 
