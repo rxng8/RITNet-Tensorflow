@@ -21,7 +21,6 @@ from munch import Munch
 
 import tensorflow as tf
 
-from ritnet.trainer.trainer import Trainer
 print(f"Tensorflow version: {tf.__version__}")
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 import tensorflow.python.keras.layers as layers
@@ -34,11 +33,13 @@ import tqdm
 
 import argparse
 
+from ritnet.trainer.trainer import Trainer
 from ritnet.utils.utils import show_img, preprocess_image, preprocess_label, show_imgs
 from ritnet.utils.config import get_config_from_json, setup_global_config
 from ritnet.model.model_builder import build_unet_model
 
 gpus = tf.config.list_physical_devices('GPU')
+
 if gpus:
   try:
     # Currently, memory growth needs to be the same across GPUs
