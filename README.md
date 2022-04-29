@@ -24,10 +24,10 @@
 * This is the result trained from 1 epoch of 8000 objects (~34,000 objects in the training set). These are trained with 1 GPU NVIDIA GTX 1060 Max-Q 6 Gb. Trained with normal CE loss.
 <div style="align-item: center;">
   <p>Input:</p>
-  <img src="./docs/figures/SimpleUNet2/example_input.png" width=500/>
+  <img src="./docs/figures/training_config_1_SimpleUNet2/example_input.png" width=500/>
   
   <p>Inference</p>
-  <img src="./docs/figures/SimpleUNet2/example_output.png" width=500/>
+  <img src="./docs/figures/training_config_1_SimpleUNet2/example_output.png" width=500/>
 </div>
 
 * This is the result trained from 10 epoch of 34,000 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. Trained with normal CE loss
@@ -54,6 +54,9 @@
   <img src="./docs/figures/training_config_2_SimpleUNet2/example_output_1.png" width=500/>
 </div>
 
+## To be implemented:
+* SL Loss
+* BAL Loss
 
 ## Misc
 * Install TensorRT
