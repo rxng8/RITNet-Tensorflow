@@ -76,18 +76,18 @@ def main():
 
   model.load_weights(weights_path)
 
-  img_path = "<inference path>"
+  img_path = "../data/inference_data/0305.tif"
 
   img = np.asarray(Image.open(img_path))
   try:
-    assert image.shape[-1] == 3
+    assert img.shape[-1] == 3
   except:
-    if image.shape[-1] == 4:
-      image = image[..., :-1]
+    if img.shape[-1] == 4:
+      img = img[..., :-1]
     else:
       print("Unknown number of channel.")
       sys.exit(1)
-  prep_img = preprocess_image(img)
+  prep_img = preprocess_image(img, image_size=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
   
   batch_x = tf.convert_to_tensor(prep_img)[tf.newaxis, ...]
   example_id = 0
