@@ -68,6 +68,20 @@ def main():
   model_config_path = "../configs/model_config/simplenet.json"
   model_config = get_config_from_json(model_config_path)
 
+  # Because the generate is based on the GLOBAL_CONFIG, we have to import them after we set the config
+  from ritnet.dataloader.dataloader import test_generator
+
+  # Data loader
+  test_dataset = tf.data.Dataset.from_generator(
+    test_generator,
+    output_signature=(
+      tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
+      tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32)
+    )
+  )
+  test_batch_dataset = test_dataset.batch(GLOBAL_CONFIG.batch_size)
+  test_batch_iter = iter(test_batch_dataset)
+
   # Build model!
   model = build_unet_model(config, model_config, verbose=False)
 
@@ -76,21 +90,10 @@ def main():
 
   model.load_weights(weights_path)
 
-  img_path = "<inference path>"
-
-  img = np.asarray(Image.open(img_path))
-  try:
-    assert image.shape[-1] == 3
-  except:
-    if image.shape[-1] == 4:
-      image = image[..., :-1]
-    else:
-      print("Unknown number of channel.")
-      sys.exit(1)
-  prep_img = preprocess_image(img)
-  
-  batch_x = tf.convert_to_tensor(prep_img)[tf.newaxis, ...]
-  example_id = 0
+  batch = next(test_batch_iter)
+  batch_x = batch[0]
+  batch_label = batch[1]
+  example_id = random.randint(0, config.batch_size - 1)
 
   with tf.device("/GPU:0"):
     y_pred = model(batch_x, training=False)
