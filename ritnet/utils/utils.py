@@ -18,6 +18,7 @@ from PIL import Image
 
 
 def show_img(img):
+  plt.figure(facecolor='white')
   plt.axis("off")
   plt.imshow(img)
   plt.show()
@@ -25,7 +26,7 @@ def show_img(img):
 def show_imgs(images: List[List[np.ndarray]], figsize: Tuple[int]=(10,10)) -> None:
   height, width = len(images), len(images[0])
   axes = []
-  f = plt.figure(figsize=figsize)
+  f = plt.figure(figsize=figsize, facecolor='white')
   for i in range(height * width):
     # Debug, plot figure
     axes.append(f.add_subplot(height, width, i + 1))
