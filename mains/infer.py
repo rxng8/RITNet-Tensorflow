@@ -57,7 +57,7 @@ def main():
   
   # Argument parsing
   
-  config_path = "../configs/training_config/training_config_2.json"
+  config_path = "../configs/training_config/training_config_3.json"
   config = get_config_from_json(config_path)
 
   ##### Workaround ############
@@ -76,7 +76,7 @@ def main():
 
   model.load_weights(weights_path)
 
-  img_path = "../data/inference_data/0305.tif"
+  img_path = "../data/inference_data/0311.tif"
 
   img = np.asarray(Image.open(img_path))
   try:
@@ -107,6 +107,6 @@ def main():
   example_sclera = mask == 3
 
   show_imgs([[mask, example_pupil], [example_iris, example_sclera]])
-  
+
 if __name__ == '__main__':
   main()

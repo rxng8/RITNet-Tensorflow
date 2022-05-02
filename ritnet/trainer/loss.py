@@ -105,7 +105,9 @@ def get_sl_loss_func(loss_config: Munch, verbose=True):
 
     assert pred.shape == dist_matrix.shape
 
-    surface_loss = tf.reduce_mean(pred * dist_matrix)
+    sigmoid_pred = tf.nn.sigmoid(pred)
+
+    surface_loss = tf.reduce_mean(sigmoid_pred * dist_matrix)
     # print(ce_loss)
     # print(surface_loss)
     return ce_loss + loss_config.sl_theta * surface_loss

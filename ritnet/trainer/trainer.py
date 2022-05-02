@@ -202,13 +202,13 @@ class TrainerWithDistMatrix(Trainer):
             #   continue
             val_batch = next(self.test_batch_iter)
             logits = self.model(val_batch[0], training=False)
-            val_loss = self.loss_function(val_batch[1], logits)
+            val_loss = self.loss_function(val_batch[1], logits, val_batch[2])
             # print(f"exmaple logits: {logits}")
             print(f"Validation loss: {val_loss}\n-----------------")
           if (step_pointer + 1) == self.steps_per_epoch:
             val_batch = next(self.test_batch_iter)
             logits = self.model(val_batch[0], training=False)
-            val_loss = self.loss_function(val_batch[1], logits)
+            val_loss = self.loss_function(val_batch[1], logits, val_batch[2])
             epochs_val_loss.append(val_loss)
 
           step_pointer += 1

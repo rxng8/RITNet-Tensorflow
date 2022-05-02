@@ -6,10 +6,10 @@
   },
   "channel": 3,
   "n_class": 4,
-  "batch_size": 8,
-  "steps_per_epoch": 4250,
-  "valid_step": 250,
-  "epochs": 10,
+  "batch_size": 4,
+  "steps_per_epoch": 100,
+  "valid_step": 25,
+  "epochs": 1,
   "dataset_root": "../data/s-general/",
   "loss": {
     "name": "sl",
@@ -20,5 +20,5 @@
     "name": "adam",
     "learning_rate": 1e-4
   },
-  "sl_dist_scale": 1e-3
+  "sl_dist_scale": 0.00000976562
 }
