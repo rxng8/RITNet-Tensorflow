@@ -6,15 +6,15 @@
   },
   "channel": 3,
   "n_class": 4,
-  "batch_size": 4,
-  "steps_per_epoch": 100,
-  "valid_step": 25,
-  "epochs": 1,
+  "batch_size": 8,
+  "steps_per_epoch": 4250,
+  "valid_step": 250,
+  "epochs": 10,
   "dataset_root": "../data/s-general/",
   "loss": {
-    "name": "sl",
+    "name": "gdl_sl",
     "gdl_theta": 0.1,
-    "sl_theta": 1
+    "sl_theta": 0.5
   },
   "optimizer": {
     "name": "adam",
