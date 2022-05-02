@@ -54,9 +54,28 @@
   <img src="./docs/figures/training_config_2_SimpleUNet2/example_output_1.png" width=500/>
 </div>
 
+* Surface Loss
+  * This is the example result of generating distance matrix based on preprocessed label.
+
+<div style="align-item: center;">
+  <p>Input (not preprocessed label):</p>
+  <img src="./docs/figures/dist_matrix/input.png" width=500/>
+  
+  <p>Distance matrix:</p>
+  <img src="./docs/figures/dist_matrix/dist_mat.png" width=500/>
+</div>
+
 ## To be implemented:
-* SL Loss
 * BAL Loss
+  * This is the example result of canny edge detection based on preprocessed label.
+
+<div style="align-item: center;">
+  <p>Input (not preprocessed label):</p>
+  <img src="./docs/figures/bal/input.png" width=500/>
+  
+  <p>Canny:</p>
+  <img src="./docs/figures/bal/canny.png" width=500/>
+</div>
 
 ## Misc
 * Install TensorRT
