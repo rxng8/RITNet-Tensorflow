@@ -1,5 +1,5 @@
 {
-  "name": "training_config_2",
+  "name": "training_config_3",
   "image_size": {
     "width": 256,
     "height": 192
@@ -12,11 +12,13 @@
   "epochs": 10,
   "dataset_root": "../data/s-general/",
   "loss": {
-    "name": "gdl",
-    "gdl_theta": 0.1
+    "name": "sl",
+    "gdl_theta": 0.1,
+    "sl_theta": 1
   },
   "optimizer": {
     "name": "adam",
     "learning_rate": 1e-4
-  }
+  },
+  "sl_dist_scale": 1e-3
 }

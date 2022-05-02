@@ -12,6 +12,8 @@ Example main file
 
 import tensorflow as tf
 
+from ritnet.trainer.trainer import TrainerWithDistMatrix
+
 print(f"Tensorflow version: {tf.__version__}")
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
@@ -36,7 +38,7 @@ def main():
   
   # Argument parsing
   
-  config_path = "../configs/training_config/training_config_2.json"
+  config_path = "../configs/training_config/training_config_3.json"
   model_config_path = "../configs/model_config/simplenet.json"
 
   config = get_config_from_json(config_path)
@@ -55,23 +57,45 @@ def main():
   from ritnet.dataloader.dataloader import train_generator, test_generator
 
   # Data loader
-  train_dataset = tf.data.Dataset.from_generator(
-    train_generator,
-    output_signature=(
-      tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
-      tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32)
+  train_dataset = None
+  if "sl" in GLOBAL_CONFIG.loss.name:
+    train_dataset = tf.data.Dataset.from_generator(
+      train_generator,
+      output_signature=(
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32),
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32)
+      )
     )
-  )
+  else:
+    train_dataset = tf.data.Dataset.from_generator(
+      train_generator,
+      output_signature=(
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32),
+      )
+    )
   train_batch_dataset = train_dataset.batch(GLOBAL_CONFIG.batch_size)
   train_batch_iter = iter(train_batch_dataset)
 
-  test_dataset = tf.data.Dataset.from_generator(
-    test_generator,
-    output_signature=(
-      tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
-      tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32)
+  test_dataset = None
+  if "sl" in GLOBAL_CONFIG.loss.name:
+    test_dataset = tf.data.Dataset.from_generator(
+      test_generator,
+      output_signature=(
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32),
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32)
+      )
     )
-  )
+  else:
+    test_dataset = tf.data.Dataset.from_generator(
+      test_generator,
+      output_signature=(
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.channel), dtype=tf.float32),
+        tf.TensorSpec(shape=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width, GLOBAL_CONFIG.n_class), dtype=tf.float32)
+      )
+    )
   test_batch_dataset = test_dataset.batch(GLOBAL_CONFIG.batch_size)
   test_batch_iter = iter(test_batch_dataset)
 
@@ -88,20 +112,35 @@ def main():
   # get the loss function by loss config
   from ritnet.trainer.loss import get_loss_func_by_loss_config
   loss_func = get_loss_func_by_loss_config(GLOBAL_CONFIG.loss)
-
-  trainer = Trainer(
-    model,
-    train_batch_iter,
-    test_batch_iter,
-    optimizer,
-    loss_func,
-    epochs=GLOBAL_CONFIG.epochs,
-    steps_per_epoch=GLOBAL_CONFIG.steps_per_epoch, # 34000 // 8 = 4250
-    valid_step=GLOBAL_CONFIG.valid_step,
-    history_path=history_path,
-    weights_path=weights_path,
-    save_history=True
-  )
+  trainer = None
+  if "sl" in GLOBAL_CONFIG.loss.name:
+    trainer = TrainerWithDistMatrix(
+      model,
+      train_batch_iter,
+      test_batch_iter,
+      optimizer,
+      loss_func,
+      epochs=GLOBAL_CONFIG.epochs,
+      steps_per_epoch=GLOBAL_CONFIG.steps_per_epoch, # 34000 // 8 = 4250
+      valid_step=GLOBAL_CONFIG.valid_step,
+      history_path=history_path,
+      weights_path=weights_path,
+      save_history=True
+    )
+  else:
+    trainer = Trainer(
+      model,
+      train_batch_iter,
+      test_batch_iter,
+      optimizer,
+      loss_func,
+      epochs=GLOBAL_CONFIG.epochs,
+      steps_per_epoch=GLOBAL_CONFIG.steps_per_epoch, # 34000 // 8 = 4250
+      valid_step=GLOBAL_CONFIG.valid_step,
+      history_path=history_path,
+      weights_path=weights_path,
+      save_history=True
+    )
 
   history = trainer.train()
 

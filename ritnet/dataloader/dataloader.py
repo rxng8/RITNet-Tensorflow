@@ -13,6 +13,7 @@ import os
 import sys
 from typing import List, Dict, Tuple
 from munch import Munch
+from scipy.ndimage import distance_transform_edt
 
 import tensorflow as tf
 print(f"Tensorflow version: {tf.__version__}")
@@ -26,6 +27,48 @@ from ..utils.utils import show_img, preprocess_image, preprocess_label, show_img
 from ..utils.config import get_config_from_json
 from ..model.model_builder import build_unet_model
 from ..utils.config import GLOBAL_CONFIG
+
+def encode_label_to_distance_matrix(label: np.ndarray) -> tf.Tensor:
+  """encode_label_to_distance_matrix
+
+  https://github.com/LIVIAETS/boundary-loss/blob/8f4457416a583e33cae71443779591173e27ec62/utils.py#L260
+  https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.distance_transform_edt.html
+  https://arxiv.org/abs/1812.07032
+
+  Args:
+    label (np.ndarray): One-hot encoded label with muultiple channels. Expect label shape to be
+      (height, width, n_class). Label are expected to contain only zeros and ones.
+
+  Returns:
+    tf.Tensor: The distance matrix of the label as in the paper above.
+  """
+  assert len(label.shape) == 3
+  
+  # For every channel in the label, encode it to the distance matrix
+  n_channel = label.shape[-1]
+
+  res = []
+
+  for channel in range(n_channel):
+    positive_mask = tf.cast(label[..., channel], tf.bool) # (height, width)
+    negative_mask = ~positive_mask # (height, width)
+    computation_cond = tf.reduce_any(positive_mask, axis=[0, 1]) # (0,)
+    computation_cond = computation_cond[..., tf.newaxis, tf.newaxis] # (1, 1)
+    computation_cond = tf.broadcast_to(computation_cond, (GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width)) # (height, width)
+    computation_cond = tf.cast(computation_cond, tf.double) # (height, width)
+
+    outside_distance = distance_transform_edt(negative_mask, sampling=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
+    inside_distance = distance_transform_edt(positive_mask, sampling=(GLOBAL_CONFIG.image_size.height, GLOBAL_CONFIG.image_size.width))
+
+    channel_distance_matrix = outside_distance * tf.cast(negative_mask, tf.double) - (inside_distance - 1) * tf.cast(positive_mask, tf.double) # (height, width)
+    channel_distance_matrix = tf.convert_to_tensor(channel_distance_matrix) # (height, width)
+
+    channel_distance_matrix = channel_distance_matrix * computation_cond # (height, width)
+    channel_distance_matrix = GLOBAL_CONFIG.sl_dist_scale * channel_distance_matrix
+    channel_distance_matrix = channel_distance_matrix[..., tf.newaxis] # (height, width, 1)
+    res.append(channel_distance_matrix)
+
+  return tf.concat(res, axis=-1) # (height, width, n_channel)
 
 # https://www.tensorflow.org/guide/data_performance
 def train_generator():
@@ -83,7 +126,11 @@ def train_generator():
       folder_pointer = 0
 
     # Yield
-    yield prep_image, prep_label
+    if "sl" in GLOBAL_CONFIG.loss.name:
+      dist_matrix = encode_label_to_distance_matrix(prep_label)
+      yield prep_image, prep_label, dist_matrix
+    else:
+      yield prep_image, prep_label
 
 def test_generator():
 
@@ -140,4 +187,8 @@ def test_generator():
       folder_pointer = 0
 
     # Yield
-    yield prep_image, prep_label
+    if "sl" in GLOBAL_CONFIG.loss.name:
+      dist_matrix = encode_label_to_distance_matrix(prep_label)
+      yield prep_image, prep_label, dist_matrix
+    else:
+      yield prep_image, prep_label

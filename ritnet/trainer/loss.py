@@ -87,7 +87,7 @@ def get_gdl_loss_func(loss_config: Munch, verbose=True):
     #   print(pred)
     #   print(invariance_per_class)
 
-    return ce_loss + loss_config.theta * gdl
+    return ce_loss + loss_config.gdl_theta * gdl
   
   return gdl_loss
 
@@ -99,7 +99,18 @@ def get_bal_loss_func(loss_config: Munch, verbose=True):
 def get_sl_loss_func(loss_config: Munch, verbose=True):
   if verbose:
     print("[Loss] get_sl_loss")
-  pass 
+
+  def sl_loss(true, pred, dist_matrix):
+    ce_loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True)(true, pred)
+
+    assert pred.shape == dist_matrix.shape
+
+    surface_loss = tf.reduce_mean(pred * dist_matrix)
+    # print(ce_loss)
+    # print(surface_loss)
+    return ce_loss + loss_config.sl_theta * surface_loss
+
+  return sl_loss
 
 def get_normal_ce_loss_func(loss_config: Munch, verbose=True):
   if verbose:
