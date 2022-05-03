@@ -38,7 +38,7 @@ def main():
   
   # Argument parsing
   
-  config_path = "../configs/training_config/training_config_3.json"
+  config_path = "../configs/training_config/training_config_4.json"
   model_config_path = "../configs/model_config/simplenet.json"
 
   config = get_config_from_json(config_path)

@@ -172,7 +172,7 @@ def bal_weight_map(loss_config, true, dist_matrix):
   invariance_per_class = 1 / (tf.pow(tf.reduce_sum(flat_true, axis=-2), 2) + 1e-8)
   invariance_per_class *= loss_config.bal_omega_1
   bal_weights = loss_config.bal_omega_0 * tf.exp( - ( tf.square(mask_dist_matrix) / (2 * (loss_config.bal_delta ** 2)) ))
-  invariance_per_class = invariance_per_class[tf.newaxis, tf.newaxis, ...]
+  invariance_per_class = invariance_per_class[:, tf.newaxis, tf.newaxis, :]
   invariance_per_class = tf.broadcast_to(invariance_per_class, shape=bal_weights.shape)
   bal_weights *= invariance_per_class
   bal_weights = tf.reduce_mean(bal_weights)
