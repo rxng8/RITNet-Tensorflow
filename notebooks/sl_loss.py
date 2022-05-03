@@ -42,7 +42,7 @@ from ritnet.utils.config import GLOBAL_CONFIG
 # Because the generator and some classes are based on the
 # GLOBAL_CONFIG, we have to import them after we set the config
 from ritnet.model.model_builder import build_unet_model
-from ritnet.utils.utils import preprocess_image, preprocess_label, show_img
+from ritnet.utils.utils import preprocess_image, preprocess_label, show_img, show_imgs
 
 # Define path
 image_path = "../data/s-general/7/synthetic/0011.tif"
@@ -181,5 +181,9 @@ dist_matrix.shape
 
 # %%
 
-show_img(dist_matrix[0, ..., 3])
+show_img(prep_image[0, ...])
 
+show_imgs([[dist_matrix[0, ..., 0],dist_matrix[0, ..., 1]], [dist_matrix[0, ..., 2],dist_matrix[0, ..., 3]]])
+
+
+# %%
