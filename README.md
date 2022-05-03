@@ -44,14 +44,26 @@
 
 * This is the result trained from 10 epoch of 34,000 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. Trained with normal CE and GDL loss.
 <div style="align-item: center;">
-  <!-- <p>History:</p>
-  <img src="./docs/figures/training_config_1_SimpleUNet2/simpleUNet2_training_result.png" width=500/> -->
+  <p>History:</p>
+  <img src="./docs/figures/training_config_2_SimpleUNet2/history.png" width=500/>
 
   <p>Input:</p>
   <img src="./docs/figures/training_config_2_SimpleUNet2/example_input_1.png" width=500/>
   
   <p>Inference</p>
   <img src="./docs/figures/training_config_2_SimpleUNet2/example_output_1.png" width=500/>
+</div>
+
+* This is the result trained from 10 epoch of 34,000 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. Trained with normal CE, GDL loss, and Surface Loss.
+<div style="align-item: center;">
+  <p>History:</p>
+  <img src="./docs/figures/training_config_3_SimpleUNet2/history.png" width=500/>
+
+  <p>Input:</p>
+  <img src="./docs/figures/training_config_3_SimpleUNet2/input.png" width=500/>
+  
+  <p>Inference</p>
+  <img src="./docs/figures/training_config_3_SimpleUNet2/output.png" width=500/>
 </div>
 
 * Surface Loss

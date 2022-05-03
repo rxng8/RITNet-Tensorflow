@@ -76,7 +76,7 @@ def main():
 
   model.load_weights(weights_path)
 
-  img_path = "../data/inference_data/0311.tif"
+  img_path = "../data/inference_data/0305.tif"
 
   img = np.asarray(Image.open(img_path))
   try:

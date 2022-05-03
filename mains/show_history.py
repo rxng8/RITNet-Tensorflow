@@ -57,10 +57,17 @@ def main():
   
   # Argument parsing
 
+  config_path = "../configs/training_config/training_config_2.json"
+  config = get_config_from_json(config_path)
+  ##### Workaround to setup global config ############
+  setup_global_config(config)
+  from ritnet.utils.config import GLOBAL_CONFIG
+  ##### End of Workaround #####
+
   model_config_path = "../configs/model_config/simplenet.json"
   model_config = get_config_from_json(model_config_path)
 
-  history_path = f"../history/history_{model_config.model_name}.npy"
+  history_path = f"../history/{GLOBAL_CONFIG.name}_{model_config.model_name}.npy"
   history = np.load(history_path, allow_pickle=True)
   [epochs_loss, epochs_val_loss] = history
 
@@ -85,7 +92,7 @@ def main():
   plt.legend()
   # plt.show()
 
-  plt.savefig("output.png", transparent=False)
+  plt.savefig("history.png", transparent=False)
   
 if __name__ == '__main__':
   main()
