@@ -13,7 +13,7 @@
   "dataset_root": "../data/s-general/",
   "loss": {
     "name": "gdl",
-    "gdl_theta": 0.1
+    "gdl_lambda": 0.1
   },
   "optimizer": {
     "name": "adam",

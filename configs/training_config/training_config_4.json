@@ -1,5 +1,5 @@
 {
-  "name": "training_config_3",
+  "name": "training_config_4",
   "image_size": {
     "width": 256,
     "height": 192
@@ -12,9 +12,14 @@
   "epochs": 10,
   "dataset_root": "../data/s-general/",
   "loss": {
-    "name": "gdl_sl",
+    "name": "gdl_sl_bal",
     "gdl_lambda": 0.1,
-    "sl_lambda": 0.5
+    "sl_lambda": 0.5,
+    "bal_omega_0": 10,
+    "bal_omega_1": 1e4,
+    "bal_delta": 5,
+    "bal_lambda_1": 1,
+    "bal_lambda_2": 1
   },
   "optimizer": {
     "name": "adam",
