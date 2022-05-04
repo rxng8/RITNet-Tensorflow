@@ -22,73 +22,71 @@
 
 ## Results:
 * This is the result trained from 1 epoch of 8000 objects (~34,000 objects in the training set). These are trained with 1 GPU NVIDIA GTX 1060 Max-Q 6 Gb. Trained with normal CE loss.
-<div style="align-item: center;">
-  <p>Input:</p>
-  <img src="./docs/figures/training_config_1_SimpleUNet2/example_input.png" width=500/>
-  
-  <p>Inference</p>
-  <img src="./docs/figures/training_config_1_SimpleUNet2/example_output.png" width=500/>
-</div>
+  <div align="center">
+    <p>Input:</p>
+    <img src="./docs/figures/training_config_1_SimpleUNet2/example_input.png" width=300/>
+    
+    <p>Inference</p>
+    <img src="./docs/figures/training_config_1_SimpleUNet2/example_output.png" width=300/>
+  </div>
 
 * This is the result trained from 10 epoch of 34,000 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. Trained with normal CE loss
-<div style="align-item: center;">
-  <p>History:</p>
-  <img src="./docs/figures/training_config_1_SimpleUNet2/simpleUNet2_training_result.png" width=500/>
+  <div align="center">
+    <p>History</p>
+    <img src="./docs/figures/training_config_1_SimpleUNet2/simpleUNet2_training_result.png" width=300/>
 
-  <p>Input:</p>
-  <img src="./docs/figures/training_config_1_SimpleUNet2/example_input_2.png" width=500/>
-  
-  <p>Inference</p>
-  <img src="./docs/figures/training_config_1_SimpleUNet2/example_output_2.png" width=500/>
-</div>
+    <p>Input</p>
+    <img src="./docs/figures/training_config_1_SimpleUNet2/example_input_2.png" width=300/>
+    
+    <p>Inference</p>
+    <img src="./docs/figures/training_config_1_SimpleUNet2/example_output_2.png" width=300/>
+  </div>
 
 * This is the result trained from 10 epoch of 34,000 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. Trained with normal CE and GDL loss.
-<div style="align-item: center;">
-  <p>History:</p>
-  <img src="./docs/figures/training_config_2_SimpleUNet2/history.png" width=500/>
+  <div align="center">
+    <p>History</p>
+    <img src="./docs/figures/training_config_2_SimpleUNet2/history.png" width=300/>
 
-  <p>Input:</p>
-  <img src="./docs/figures/training_config_2_SimpleUNet2/example_input_1.png" width=500/>
-  
-  <p>Inference</p>
-  <img src="./docs/figures/training_config_2_SimpleUNet2/example_output_1.png" width=500/>
-</div>
+    <p>Input</p>
+    <img src="./docs/figures/training_config_2_SimpleUNet2/example_input_1.png" width=300/>
+    
+    <p>Inference</p>
+    <img src="./docs/figures/training_config_2_SimpleUNet2/example_output_1.png" width=300/>
+  </div>
 
 * This is the result trained from 10 epoch of 34,000 objects per epoch. These are trained with 1 GPU NVIDIA RTX 3080 12 Gb. Trained with normal CE, GDL loss, and Surface Loss.
-<div style="align-item: center;">
-  <p>History:</p>
-  <img src="./docs/figures/training_config_3_SimpleUNet2/history.png" width=500/>
+  <div align="center">
+    <p>History</p>
+    <img src="./docs/figures/training_config_3_SimpleUNet2/history.png" width=300/>
 
-  <p>Input:</p>
-  <img src="./docs/figures/training_config_3_SimpleUNet2/input.png" width=500/>
-  
-  <p>Inference</p>
-  <img src="./docs/figures/training_config_3_SimpleUNet2/output.png" width=500/>
-</div>
+    <p>Input</p>
+    <img src="./docs/figures/training_config_3_SimpleUNet2/input.png" width=300/>
+    
+    <p>Inference</p>
+    <img src="./docs/figures/training_config_3_SimpleUNet2/output.png" width=300/>
+  </div>
 
-* Surface Loss
-  * This is the example result of generating distance matrix based on preprocessed label.
+* Surface Loss: This is the example result of generating distance matrix based on preprocessed label.
+  <div align="center">
+    <p>Input (not preprocessed label)</p>
+    <img src="./docs/figures/dist_matrix/input.png" width=300/>
+    
+    <p>Distance matrix</p>
+    <img src="./docs/figures/dist_matrix/dist_mat.png" width=300/>
+  </div>
 
-<div style="align-item: center;">
-  <p>Input (not preprocessed label):</p>
-  <img src="./docs/figures/dist_matrix/input.png" width=500/>
-  
-  <p>Distance matrix:</p>
-  <img src="./docs/figures/dist_matrix/dist_mat.png" width=500/>
-</div>
-
-## To be implemented:
-* BAL Loss
+* BAL Loss:
   * This is the example result of canny edge detection based on preprocessed label.
+  <div align="center">
+    <p>Input (not preprocessed label)</p>
+    <img src="./docs/figures/bal/input.png" width=300/>
+    
+    <p>Canny</p>
+    <img src="./docs/figures/bal/canny.png" width=300/>
+  </div>
 
-<div style="align-item: center;">
-  <p>Input (not preprocessed label):</p>
-  <img src="./docs/figures/bal/input.png" width=500/>
+  * Model with BAL Loss integration is still in debugging stage and has not been trained.
   
-  <p>Canny:</p>
-  <img src="./docs/figures/bal/canny.png" width=500/>
-</div>
-
 ## Misc
 * Install TensorRT
 ```
